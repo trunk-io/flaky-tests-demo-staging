@@ -29,7 +29,12 @@ jobs:
         env:
           TRUNK_PUBLIC_API_ADDRESS: ${{ vars.TRUNK_API_ADDRESS }}
         with:
-          token: ${{ secrets.TRUNK_API_TOKEN }}
+          # Not TRUNK_API_TOKEN, which every other job here uses. That one is the
+          # flaky-tests-demo org's, and this repo's CI data is not that org's: the
+          # GitHub App binds trunk-io/* to trunk-staging-org, so ci-span-ingestion
+          # writes ci_derived_repo there. generate-plan looks the repo up by the
+          # caller's org, so the demo token can only ever 404.
+          token: ${{ secrets.TRUNK_STAGING_ORG_API_TOKEN }}
 
   monitors:
     name: monitors
