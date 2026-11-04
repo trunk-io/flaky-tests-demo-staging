@@ -16,6 +16,6 @@
     "@octokit/plugin-retry": "^8.1.1",
     "@octokit/plugin-throttling": "^11.0.5",
     "@octokit/rest": "^22.0.1",
-    "zod": "^4.4.3"
+    "zod": "^4.6.6"
   }
 }
