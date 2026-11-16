@@ -197,7 +197,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - run: sleep 60
+      - run: sleep 10
+      - run: echo "before-queue deps succeeded"
 
   before-queue-checks-automatic:
     name: before-queue checks (automatic)
@@ -208,7 +209,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - run: sleep 90
+      - run: sleep 10
+      - run: echo "before-queue checks (automatic) succeeded"
 
   before-queue-checks-never:
     name: before-queue checks (never)
@@ -219,4 +221,5 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - run: sleep 75
+      - run: sleep 10
+      - run: echo "before-queue checks (never) succeeded"
