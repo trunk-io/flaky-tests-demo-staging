@@ -18,6 +18,7 @@ jobs:
     uses: ./.github/workflows/repro-build-tests.yaml
     with:
       dynamic-ci-enabled: true
+      caller-job: ${{ github.job }}
     secrets: inherit
 
   integration:

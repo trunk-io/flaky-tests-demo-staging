@@ -6,6 +6,9 @@ on:
       dynamic-ci-enabled:
         type: boolean
         default: true
+      caller-job:
+        type: string
+        default: ""
 
 jobs:
   DynamicCi:
@@ -22,6 +25,7 @@ jobs:
         run: |
           echo "GITHUB_WORKFLOW_REF=$GITHUB_WORKFLOW_REF"
           echo "GITHUB_JOB=$GITHUB_JOB"
+          echo "CALLER_JOB=${{ inputs.caller-job }}"
       - id: ci-filter
         if: inputs.dynamic-ci-enabled
         uses: trunk-io/dynamic-ci@main
