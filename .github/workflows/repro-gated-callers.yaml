@@ -1,0 +1,56 @@
+name: Repro gated callers
+
+# Dynamic CI's filter in the top-level workflow, gating jobs that call reusable
+# workflows. Not part of the demo's data.
+on:
+  pull_request:
+    paths:
+      - .github/workflows/repro-gated-callers.yaml
+      - .github/workflows/repro-called-*.yaml
+      - repro-callers/**
+
+permissions:
+  contents: read
+
+jobs:
+  dynamic-ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      stress: ${{ steps.dynamic-ci.outputs.stress }}
+      native-builds: ${{ steps.dynamic-ci.outputs.native-builds }}
+      recovery: ${{ steps.dynamic-ci.outputs['persistence/recovery'] }}
+      sync: ${{ steps.dynamic-ci.outputs['persistence/sync'] }}
+    steps:
+      - id: dynamic-ci
+        uses: trunk-io/dynamic-ci@main
+        env:
+          TRUNK_PUBLIC_API_ADDRESS: ${{ vars.TRUNK_API_ADDRESS }}
+        with:
+          # The repo's CI data is trunk-staging-org's; the demo org's token gets 404s.
+          token: ${{ secrets.TRUNK_STAGING_ORG_API_TOKEN }}
+          job-keys: stress,native-builds,persistence/recovery,persistence/sync
+      - name: Show every output the filter set
+        env:
+          OUTPUTS: ${{ toJSON(steps.dynamic-ci.outputs) }}
+        run: echo "$OUTPUTS"
+
+  stress:
+    needs: [dynamic-ci]
+    if: ${{ !cancelled() && needs.dynamic-ci.outputs.stress != 'false' }}
+    uses: ./.github/workflows/repro-called-stress.yaml
+    with:
+      mode: gate
+
+  native-builds:
+    needs: [dynamic-ci]
+    if: ${{ !cancelled() && needs.dynamic-ci.outputs.native-builds != 'false' }}
+    uses: ./.github/workflows/repro-called-native.yaml
+
+  persistence:
+    needs: [dynamic-ci]
+    if: ${{ !cancelled() }}
+    uses: ./.github/workflows/repro-called-persistence.yaml
+    with:
+      recovery: ${{ needs.dynamic-ci.outputs.recovery }}
+      sync: ${{ needs.dynamic-ci.outputs.sync }}

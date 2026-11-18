@@ -1,0 +1,30 @@
+name: Repro called persistence
+
+on:
+  workflow_call:
+    inputs:
+      recovery:
+        type: string
+        default: ""
+      sync:
+        type: string
+        default: ""
+
+jobs:
+  recovery:
+    name: Recovery / ${{ matrix.db }}
+    if: ${{ inputs.recovery != 'false' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        db: [pglite, postgres]
+    steps:
+      - run: sleep 7
+
+  sync:
+    name: Sync check
+    if: ${{ inputs.sync != 'false' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: sleep 7

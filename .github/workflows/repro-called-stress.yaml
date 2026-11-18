@@ -1,0 +1,36 @@
+name: Repro called stress
+
+on:
+  workflow_call:
+    inputs:
+      mode:
+        type: string
+        default: gate
+
+jobs:
+  plan:
+    name: Stress plan
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+    steps:
+      - id: plan
+        run: echo 'matrix={"shard":[1,2]}' >> "$GITHUB_OUTPUT"
+
+  shards:
+    name: ${{ inputs.mode == 'gate' && 'Stress shard' || 'Soak shard' }} ${{ matrix.shard }}
+    needs: plan
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    steps:
+      - run: sleep 8
+
+  result:
+    name: ${{ inputs.mode == 'gate' && 'stress result' || 'soak result' }}
+    needs: [plan, shards]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo done
