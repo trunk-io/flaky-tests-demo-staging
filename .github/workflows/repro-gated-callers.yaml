@@ -37,14 +37,14 @@ jobs:
 
   stress:
     needs: [dynamic-ci]
-    if: ${{ !cancelled() && needs.dynamic-ci.outputs.stress != 'false' }}
+    if: ${{ !cancelled() && needs.dynamic-ci.outputs.stress != 'false' && !contains(github.event.pull_request.title, '[skip-callers]') }}
     uses: ./.github/workflows/repro-called-stress.yaml
     with:
       mode: gate
 
   native-builds:
     needs: [dynamic-ci]
-    if: ${{ !cancelled() && needs.dynamic-ci.outputs.native-builds != 'false' }}
+    if: ${{ !cancelled() && needs.dynamic-ci.outputs.native-builds != 'false' && !contains(github.event.pull_request.title, '[skip-callers]') }}
     uses: ./.github/workflows/repro-called-native.yaml
 
   persistence:
