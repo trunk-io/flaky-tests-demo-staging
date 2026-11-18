@@ -1,0 +1,20 @@
+# Uploaded by the pipeline's registered step, which never runs on a fork build (TRUNK-24105).
+steps:
+  - label: ":arrow_up: before-queue steps"
+    agents:
+      queue: managed
+    timeout_in_minutes: 5
+    env:
+      TRUNK_PUBLIC_API_ADDRESS: https://api.trunk-staging.io
+    secrets:
+      - TRUNK_STAGING_ORG_API_TOKEN
+    command: |
+      cat .buildkite/before-queue.yml \
+        | trunk-dynamic-ci-filter \
+        | buildkite-agent pipeline upload
+    plugins:
+      # trunk-io/dynamic-ci-buildkite-plugin#27 (forwards TRUNK_RBQ_DISPATCH_ID) is in no release yet.
+      - trunk-io/dynamic-ci#945380b53d5ac8cb4464382e9fee8f38d5782457:
+          mode: filter
+          token-env: TRUNK_STAGING_ORG_API_TOKEN
+          debug: true
