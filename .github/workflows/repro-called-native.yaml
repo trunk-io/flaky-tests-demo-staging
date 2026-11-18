@@ -1,0 +1,33 @@
+name: Repro called native
+
+on:
+  workflow_call: {}
+
+jobs:
+  startup:
+    name: Native startup probe
+    runs-on: ubuntu-latest
+    steps:
+      - run: sleep 5
+
+  native:
+    name: ${{ matrix.target }} / Bun ${{ matrix.bun }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [linux-x64, darwin-arm64]
+        bun: ["1.3"]
+    steps:
+      - run: sleep 6
+
+  musl:
+    name: ${{ matrix.target }} / Bun ${{ matrix.bun }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [linux-x64-musl]
+        bun: ["1.3"]
+    steps:
+      - run: sleep 6
