@@ -1,0 +1,13 @@
+steps:
+  - label: ":white_check_mark: control"
+    key: control
+    agents: &agents
+      queue: managed
+    timeout_in_minutes: &timeout 5
+    command: sleep 5 && echo "control ran on $$BUILDKITE_COMMIT (build source $$BUILDKITE_SOURCE)"
+
+  - label: ":hourglass: rbq target"
+    key: rbq-target
+    agents: *agents
+    timeout_in_minutes: *timeout
+    command: sleep 30 && echo "rbq target ran on $$BUILDKITE_COMMIT, dispatch $${TRUNK_RBQ_DISPATCH_ID:-none}"
