@@ -17,7 +17,7 @@ Its settings live in Buildkite, not here; this table is the record of them.
 | ----------------------------------------------- | -------------- | ------------------------------------------------------------------------------------- |
 | Registered steps                                | see below      | The only copy of the fork guard a fork cannot edit                                    |
 | Build pull requests                             | on             | The check reads each PR's own build                                                   |
-| Build branches                                  | on             | Off refuses every API build on a branch, Run Before Queue's own included              |
+| Build branches                                  | on             | Off refused an API build on a branch, so it would likely refuse Run Before Queue's too |
 | Filter builds (conditional)                     | `build.pull_request.id != null \|\| build.branch == "rbq-buildkite"` | No push build of a PR branch: one reads as the same repository without `pull_request.repository` |
 | Pull request branch filter                      | `rbq-*`        | Factory PRs and `trunk-merge/*` never build                                           |
 | Build pull requests from third-party forks      | on, while testing | The fork PR needs a build of its own                                               |
