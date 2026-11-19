@@ -10,7 +10,7 @@ inputs:
     description: Trunk org URL slug.
     required: true
   token:
-    description: Trunk org API token. Empty on fork pull requests, which skips the upload.
+    description: Trunk v2 API key with the Upload test results permission. Empty on fork pull requests, which skips the upload.
     required: false
     default: ""
   api-address:
@@ -64,10 +64,12 @@ runs:
     # SwiftPM inserts the testing library's name before the extension, so the
     # file is swift-swift-testing.xml rather than swift.xml. Glob, don't name.
     - name: Upload results
-      uses: trunk-io/analytics-uploader@385f1ccdf345b4532dc4b6c665dd432b702b8e28 # v2.1.2
+      uses: trunk-io/analytics-uploader@6bc623e3c4b7a80d7a35badde2a8e8be1e78605d # v3.0.0
       if: always()
       env:
         TRUNK_PUBLIC_API_ADDRESS: ${{ inputs.api-address }}
+        # Where the trunk CLI checks the key, on the same environment as the upload.
+        TRUNK_API_URL: ${{ inputs.api-address }}/v2
       with:
         junit-paths: integrations/*/test-results/*.xml
         org-slug: ${{ inputs.org-slug }}
